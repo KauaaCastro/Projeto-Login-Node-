@@ -1,0 +1,12 @@
+# Modulos do node (Replicáveis, por isso ignoramos)
+node_modules/
+
+# Credenciais (Segredos reais, como a senha do MySQL)
+.env
+
+# Logs da aplicação
+*.log
+
+# Arquivos temporários do Docker
+.docker/
+dist/
