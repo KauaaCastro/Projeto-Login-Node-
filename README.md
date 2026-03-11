@@ -48,12 +48,14 @@ O comando abaixo irá baixar as imagens necessárias, configurar as redes virtua
   ```
 
 3. Acessar a Aplicação
+   
 Após o deploy dos containers, a aplicação estará disponível em:
 
 ```
 http://localhost:8000
 ```
 🏗️ Arquitetura de Infraestrutura
+
 O projeto utiliza o Docker Compose para garantir que o ambiente de desenvolvimento seja idêntico ao de produção.
 
 Serviço db: Container MySQL configurado com volumes persistentes para que os dados dos usuários não sejam perdidos ao reiniciar os containers.
@@ -61,6 +63,7 @@ Serviço db: Container MySQL configurado com volumes persistentes para que os da
 Serviço app: Container Node.js que se comunica com o banco através da rede interna do Docker, utilizando o hostname db.
 
 📝 Próximos Passos (Roadmap)
+
 [x] Configuração da estrutura de pastas.
 
 [x] Dockerização da aplicação e banco de dados.
@@ -98,3 +101,4 @@ Serviço app: Container Node.js que se comunica com o banco através da rede int
 
 
    
+
