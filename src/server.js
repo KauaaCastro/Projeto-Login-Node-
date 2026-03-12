@@ -1,17 +1,17 @@
-const EXPRESS = require("express");
-const PATH = require("path");
-const APP = EXPRESS();
-const PUBLIC_ENDRESS = PATH.join(__dirname, '..', 'public');
-const SERVER_IP = 8000;
+const express = require("express");
+const path = require("path");
+const app = express();
+const PUBLIC_PATH = path.join(__dirname, '..', 'public');
+const SERVER_PORT = 8000;
 
-APP.use(EXPRESS.urlencoded({extended : true}));
-APP.use(EXPRESS.static(PATH.join(PUBLIC_ENDRESS)));
+app.use(express.urlencoded({extended : true}));
+app.use(express.static(path.join(PUBLIC_PATH)));
 
-APP.get('/', (req, res) => {
-    res.sendFile(PATH.join(PUBLIC_ENDRESS, 'login.html'));
+app.get('/', (req, res) => {
+    res.sendFile(path.join(PUBLIC_PATH, 'login.html'));
 });
 
-APP.listen(SERVER_IP, () => {
+app.listen(SERVER_PORT, () => {
     console.log("O servidor foi iniciado corretamente!");
-    console.log("Servidor iniciado em: http://localHost:" + SERVER_IP);
+    console.log("Servidor iniciado em: http://localhost:" + SERVER_PORT);
 })
