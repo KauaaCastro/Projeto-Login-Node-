@@ -71,10 +71,16 @@ Serviço app: Container Node.js que se comunica com o banco através da rede int
 
 [x] Dockerização da aplicação e banco de dados.
 
-[ ] Implementar lógica de conexão mysql2 no server.js.
+[x] Implementar lógica de conexão mysql2 no server.js.
 
-[ ] Criar script de migração para a tabela users.
+[x] Criar script de migração para a tabela users.
 
-[ ] Validar credenciais de login via POST.
+[x] Validar credenciais de login via POST.
 
-[ ] Implementar criptografia de senhas (BCrypt).
+[x] Implementar criptografia de senhas (BCrypt).
+
+
+📝 Passos de finalização 
+
+[] Tela de registro de usuário 
+[] Tela de perfil bonita e adequada
