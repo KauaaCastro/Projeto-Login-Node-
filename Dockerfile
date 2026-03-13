@@ -4,8 +4,8 @@ WORKDIR /app
 
 COPY package*.json ./
 
-COPY . .
+RUN npm install
 
-EXPOSE 8000
+COPY . .
 
 CMD ["node", "src/server.js"]
