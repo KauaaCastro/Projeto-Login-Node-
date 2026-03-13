@@ -83,4 +83,5 @@ Serviço app: Container Node.js que se comunica com o banco através da rede int
 📝 Passos de finalização 
 
 [] Tela de registro de usuário 
+
 [] Tela de perfil bonita e adequada
