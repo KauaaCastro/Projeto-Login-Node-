@@ -19,3 +19,7 @@ VALUES (
         'dc.admKauaCastro@gmail.com',
         '$2b$10$fZwc8NOXGDio6/w2Sc0Lxe0i83lIkX.dD9KW/kd7Uyyrg0W0EiTei'
     );
+
+ALTER TABLE users
+ADD COLUMN reset_code CHAR(6) DEFAULT NULL,
+ADD COLUMN reset_expires DATETIME;
