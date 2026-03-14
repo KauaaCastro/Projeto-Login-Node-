@@ -85,6 +85,8 @@ if(btnConfirm) {
             const result = await response.json();
             
             if(result.success) {
+                sessionStorage.setItem('userCode', fullCode);
+
                 alert("Código validado com sucesso! Redirecionando para a nova senha");
                 window.location.href="/redefPassword.html";
             } else {
@@ -97,5 +99,64 @@ if(btnConfirm) {
             console.log("Ocorreu um erro ao tentar validar o código (script.js)");
             alert("Ocorreu um erro ao se conectar com o servidor, por favor tente novamente");
         }       
+    });
+}
+
+// Redefinição de senha
+const inputNewPsw = document.querySelector('input[name="newPassword"]');
+const inputConfirm = document.querySelector('input[name="ConfirmPassword"]');
+const btnRedef = document.querySelector('button[name="confirmRedef"]');
+
+if (btnRedef && inputNewPsw && inputConfirm) {
+    btnRedef.addEventListener('click', async (e) => {
+        e.preventDefault();
+
+        const pswValue = inputNewPsw.value;
+        const confirmValue = inputConfirm.value;
+
+        const recEmail = sessionStorage.getItem('userEmail');
+        const recCode = sessionStorage.getItem('userCode');
+
+
+        if (pswValue !== confirmValue) {
+            alert("As senhas não coincidem!");
+            window.location.href="/forgotPassword.html";
+            return;
+        }
+
+        console.log(recCode, "" ,recEmail)
+
+        if(recEmail == null || recCode == null) {
+            alert("Sessão expirada. Volte e peça um novo código");
+            window.location.href="/forgotPassword.html";
+            return;
+        }
+
+        try {
+            const response = await fetch('/redefPassword', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    email: recEmail, 
+                    code: recCode, 
+                    newPassword: pswValue,
+                    ConfirmPassword: confirmValue
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+
+                alert("Senha alterada com sucesso! Faça login novamente.");
+                sessionStorage.clear(); 
+                window.location.href = '/'; 
+            } else {
+                alert("Erro: " + result.message);
+            }
+        } catch (error) {
+            console.error("Erro na redefinição:", error);
+            alert("Erro ao conectar com o servidor.");
+        }
     });
 }
