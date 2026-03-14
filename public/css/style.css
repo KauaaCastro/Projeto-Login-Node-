@@ -78,5 +78,14 @@ label {
     margin: 15px 0;
     cursor: pointer;
     font-family: Arial, sans-serif;
+    
 }
+
+.code-input {
+    text-align: center;
+    outline: none;
+    width: 35px;
+    height: 35px;
+}
+
 
