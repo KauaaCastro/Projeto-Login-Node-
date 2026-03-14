@@ -125,6 +125,38 @@ app.post('/verify-code', async (req, res) => {
     }
 });
 
+app.post('/redefPassword', async (req, res) => {
+    const {email, code, newPassword, ConfirmPassword} = req.body;
+    console.log("Email:", email);
+    console.log("Code:", code);
+
+    try {
+        if(!email || !code || !newPassword || !ConfirmPassword){
+            return res.status(400).json({success: false, message: "Dadps incompletos!"});
+        }
+
+        if(newPassword !== ConfirmPassword) {
+            return res.status(400).json({success: false, message: "Ops, uma senha está diferente da outra!"});
+        }
+            const hashedPsw = await bcrypt.hash(newPassword,10);
+
+            const [result] = await db.execute(
+                'UPDATE users SET password = ?, reset_code = NULL, reset_expires = NULL WHERE email = ? AND reset_code = ?',
+                [hashedPsw, email, code]
+            );
+
+            if(result.affectedRows > 0) {
+                return res.json({success: true, message: "Senha alterada com sucesso!"});
+            } else {
+                return res.status(400).json({success: false, message: "Link Expirado!"});
+            }
+
+        } catch (error) {
+        console.log("Ocorreu um erro ao salvar a nova senha");
+        console.log(error);
+    }
+})
+
 app.listen(server_port, () => {
     console.log("O servidor foi iniciado corretamente!");
     console.log("Servidor iniciado em: http://localhost:" + server_port);
