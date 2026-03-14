@@ -88,4 +88,21 @@ label {
     height: 35px;
 }
 
+.redefPassword {
+  font-size: 12px;
+  display: block;
+  text-align: right;
+  margin-top: 5px;
+}
 
+.cancel {
+    background-color: red;
+    color: white;
+    box-shadow: 0 4px 6px rgba(255, 152, 0, 0.3);
+}
+
+button[name="emailRequest"] {
+    background-color: #4CAF50;
+    color: white;
+    box-shadow: 0 4px 6px rgba(76, 175, 80, 0.3);
+}

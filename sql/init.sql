@@ -20,6 +20,22 @@ VALUES (
         '$2b$10$fZwc8NOXGDio6/w2Sc0Lxe0i83lIkX.dD9KW/kd7Uyyrg0W0EiTei'
     );
 
+INSERT INTO
+    users (name, email, password)
+VALUES (
+        'admTest',
+        'teste@gmail.com',
+        '$2b$10$fZwc8NOXGDio6/w2Sc0Lxe0i83lIkX.dD9KW/kd7Uyyrg0W0EiTei'
+    );
+
 ALTER TABLE users
 ADD COLUMN reset_code CHAR(6) DEFAULT NULL,
 ADD COLUMN reset_expires DATETIME;
+
+UPDATE users
+SET password = ?,
+reset_code = NULL,
+reset_expires = NULL
+WHERE
+    email = ?
+    AND reset_code = ?;

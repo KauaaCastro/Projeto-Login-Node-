@@ -3,7 +3,7 @@ const path = require("path");
 const app = express();
 const bcrypt = require("bcrypt");
 const db = require("./config/db");
-
+const mailer = require('./config/mailer');
 
 const public_path = path.join(__dirname, '..', 'public');
 const server_port = 8000;
@@ -15,7 +15,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '..', 'views'));
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(public_path, 'forgetPassword.html')); // ALTERAR POSTERIORMENTE
+    res.sendFile(path.join(public_path, 'login.html')); // ALTERAR POSTERIORMENTE
 });
 
 app.post('/', async (req, res) => {
@@ -44,28 +44,85 @@ app.post('/', async (req, res) => {
     }
 });
 
-app.post('/verify-code', async (req, res) => {
-    const {code} = req.body;
+app.post('/verify-email', async (req,res) => {
+    const inputEmail = req.body.emailConfirmation;
 
-    if (!code) {
+    try{
+        if(!inputEmail) {
+            return res.status(400).json({ success: false, message: "Por favor insira um email válido!"});
+
+        }
+
+        const [rows] = await db.execute('SELECT * FROM users WHERE email = ?', [inputEmail]);
+
+        if(rows.length > 0) {
+            const user = rows[0];
+            console.log("Usuário encontrado:", user.email);
+
+            const genCode = Math.floor(100000 + Math.random() * 900000).toString();
+            const expires = new Date(Date.now() + 15 * 60 * 1000);
+
+            await db.execute (
+                'UPDATE users SET reset_code = ?, reset_expires = ? WHERE email = ?', [genCode, expires, inputEmail]
+            );
+
+            const mailOptions = {
+                from: '"Sistema de Login" <noreply@seusite.com>',
+                to: inputEmail,
+                subject: "Seu Código de Recuperação",
+                html: `
+                    <div style="font-family: sans-serif; color: #333;">
+                        <h2>Recuperação de Senha</h2>
+                        <p>Olá! Você solicitou a redefinição de sua senha.</p>
+                        <p>Seu código de verificação é:</p>
+                        <h1 style="color: #4A90E2; letter-spacing: 5px;">${genCode}</h1>
+                        <p>Este código expira em 15 minutos.</p>
+                    </div>
+                `
+            };
+
+            await mailer.sendMail(mailOptions);
+            console.log(`e-mail enviado para ${inputEmail}`);
+
+            console.log(`Código gerado para: ${inputEmail}:${genCode}`);
+
+            return res.status(200).json({
+                success: true,
+                message: "E-mail verificado! Código gerado no banco de dados."
+            })
+        } else {
+            console.log("E-mail não cadastrado:", inputEmail);
+            return res.status(404).json({success: false, message: "Este e-mail não está cadastrado em nosso banco de dados"});
+        };
+    } catch (error) {
+        console.log("Ocorreu um erro ao adquirir o email, tente novamente!");
+        console.log(error)
+    }
+});
+
+app.post('/verify-code', async (req, res) => {
+    const {code, email} = req.body;
+
+    if (!code || !email) {
         return res.status(400).json({ success: false, message: "Código não enviado!" });
     }
 
     try{
     const [rows] = await db.execute(
-        'SELECT * FROM users WHERE reset_code = ? AND reset_expires > NOW()', [code]
+        'SELECT * FROM users WHERE reset_code = ? AND email = ? AND reset_expires > NOW()', [code, email]
     );
 
     if(rows.length > 0) {
-        res.status(200).json({success: true, message: "Código Verificado!"});
+        return res.status(200).json({ success: true, message: "Código Verificado!" });
     } else {
-        res.status(400).json({success: false, message: "Código inválido ou incorreto!"});
+        return res.status(400).json({ success: false, message: "Código inválido ou expirado!" });    
     }
   } catch (error) {
     console.log("Ocorreu um erro ao verificar o tokken", error);
-    res.status(500).json({ success : false, message: "Erro de servidor, reinicie e tente novamente!"});
-  }
-
+    if (!res.headersSent) {
+            return res.status(500).json({ success: false, message: "Erro interno no servidor." });
+        }
+    }
 });
 
 app.listen(server_port, () => {
