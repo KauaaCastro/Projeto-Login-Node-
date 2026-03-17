@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const path = require("path");
 const app = express();
@@ -6,7 +7,7 @@ const db = require("./config/db");
 const mailer = require('./config/mailer');
 
 const public_path = path.join(__dirname, '..', 'public');
-const server_port = 8000;
+const server_port = process.env.PORT;
 
 app.use(express.urlencoded({extended : true}));
 app.use(express.static(path.join(public_path)));
@@ -57,10 +58,12 @@ app.post('/verify-email', async (req,res) => {
 
         if(rows.length > 0) {
             const user = rows[0];
+
+            // Apagar após alterações
             console.log("Usuário encontrado:", user.email);
 
             const genCode = Math.floor(100000 + Math.random() * 900000).toString();
-            const expires = new Date(Date.now() + 15 * 60 * 1000);
+            const expires = new Date(Date.now() + 5 * 60 * 1000);
 
             await db.execute (
                 'UPDATE users SET reset_code = ?, reset_expires = ? WHERE email = ?', [genCode, expires, inputEmail]
@@ -82,8 +85,9 @@ app.post('/verify-email', async (req,res) => {
             };
 
             await mailer.sendMail(mailOptions);
+                        // Apagar após alterações
             console.log(`e-mail enviado para ${inputEmail}`);
-
+                        // Apagar após alterações
             console.log(`Código gerado para: ${inputEmail}:${genCode}`);
 
             return res.status(200).json({
@@ -115,7 +119,7 @@ app.post('/verify-code', async (req, res) => {
     if(rows.length > 0) {
         return res.status(200).json({ success: true, message: "Código Verificado!" });
     } else {
-        return res.status(400).json({ success: false, message: "Código inválido ou expirado!" });    
+        return res.status(400).json({ success: false, message: "Código inválido ou expirado!" });
     }
   } catch (error) {
     console.log("Ocorreu um erro ao verificar o tokken", error);

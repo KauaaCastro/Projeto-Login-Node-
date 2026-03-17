@@ -31,11 +31,3 @@ VALUES (
 ALTER TABLE users
 ADD COLUMN reset_code CHAR(6) DEFAULT NULL,
 ADD COLUMN reset_expires DATETIME;
-
-UPDATE users
-SET password = ?,
-reset_code = NULL,
-reset_expires = NULL
-WHERE
-    email = ?
-    AND reset_code = ?;
