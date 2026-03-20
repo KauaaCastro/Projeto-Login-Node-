@@ -1,3 +1,4 @@
+
 // Verificação de email
 const btnEmail = document.querySelector('button[name="emailRequest"]');
 const inputEmail = document.querySelector('input[name="emailConfirmation"]');
@@ -157,6 +158,60 @@ if (btnRedef && inputNewPsw && inputConfirm) {
         } catch (error) {
             console.error("Erro na redefinição:", error);
             alert("Erro ao conectar com o servidor.");
+        }
+    });
+}
+
+// Tela de registro de Usuário
+const rgName = document.querySelector('input[name="rgName"]');
+const rgEmail = document.querySelector('input[name="rgEmail"]');
+const rgTel = document.querySelector('input[name="rgTel"]');
+const btnRg = document.querySelector('button[name="btn_rgConfirm"]');
+
+const firstPw = document.querySelector('input[name="rgPassword"]');
+const ConfirmPw = document.querySelector('input[name="rgConfirmPw"]');
+
+if (btnRg) {
+    btnRg.addEventListener('click', async (e) => {
+        e.preventDefault(); 
+
+        if (!rgName.value || !rgEmail.value || !firstPw.value || !ConfirmPw.value) {
+            alert("Por favor preencha todos os campos obrigatórios antes de prosseguir!");
+            return; 
+        }
+
+        if (firstPw.value !== ConfirmPw.value) {
+            alert("Foi encontrado discrepancia de senhas, por favor tente novamente!");
+            return; 
+        }
+
+        try {
+            const userInfos = { 
+                rgName: rgName.value,
+                rgEmail: rgEmail.value,
+                rgPassword: ConfirmPw.value,
+                rgTel: rgTel.value
+            };
+
+            const response = await fetch('/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userInfos)
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                alert("Usuário criado com sucesso!");
+                window.location.href = '/'; 
+            } else {
+                alert("Erro: " + result.message);
+            }
+        } catch (error) {
+            console.error("Erro ao enviar as userInfos:", error);
+            alert("Erro na criação da conta, tente novamente!");
         }
     });
 }

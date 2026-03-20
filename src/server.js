@@ -136,7 +136,7 @@ app.post('/redefPassword', async (req, res) => {
 
     try {
         if(!email || !code || !newPassword || !ConfirmPassword){
-            return res.status(400).json({success: false, message: "Dadps incompletos!"});
+            return res.status(400).json({success: false, message: "Dados incompletos!"});
         }
 
         if(newPassword !== ConfirmPassword) {
@@ -160,6 +160,41 @@ app.post('/redefPassword', async (req, res) => {
         console.log(error);
     }
 })
+
+app.post('/register', async (req, res) => {
+    const {rgEmail, rgPassword, rgName, rgTel} = req.body;
+
+    try {
+        if (!rgEmail || !rgName || !rgPassword) {
+            res.status(400).json({success:false, message: "Houve um erro ao adquirir as informações, tente novamente!"});
+        }
+
+        const userExist = await db.execute(
+            'SELECT id FROM users WHERE email = ?', [rgEmail]
+        );
+
+        if(userExist > 0) {
+            res.status(500).json({success: false, message: "Este usuário já existe, tente fazer login ou redefina sua senha caso tenha se esquecido"})
+        }
+
+        const cryptPw = await bcrypt.hash(rgPassword, 10);
+
+        const createUser = (
+            'INSERT INTO users (name, email, password) VALUES (?, ?, ?)'
+        )
+
+        await db.execute(createUser, [rgName, rgEmail, cryptPw]);
+
+        if(userExist > 0) {
+            alert("A sua conta foi criada!")
+        }
+
+
+    } catch (error) {
+        console.log("Ocorreu um erro ao enviar as informações ao servidor!");
+        console.log(error);
+    }
+});
 
 app.listen(server_port, () => {
     console.log("O servidor foi iniciado corretamente!");
