@@ -16,7 +16,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '..', 'views'));
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(public_path, 'register.html')); // ALTERAR POSTERIORMENTE
+    res.sendFile(path.join(public_path, 'login.html')); // ALTERAR POSTERIORMENTE
 });
 
 app.post('/', async (req, res) => {
@@ -163,30 +163,49 @@ app.post('/redefPassword', async (req, res) => {
 
 app.post('/register', async (req, res) => {
     const {rgEmail, rgPassword, rgName, rgTel} = req.body;
+    
+    
+});
 
+app.post('/registerPreview', async (req, res) => {
+    const { rgName, rgEmail, rgPassword, rgTel } = req.body;
+    
+    res.render('registerPreview', {
+        user: {
+            name: rgName,
+            email: rgEmail,
+            password: rgPassword,
+            tel: rgTel
+        }
+    });
+});
+
+app.post('/confirmRegistration', async (req, res) => {
+    const {finalName, finalEmail, finalPassword, finalTel}= req.body;
+    
     try {
-        if (!rgEmail || !rgName || !rgPassword) {
+        if (!finalEmail || !finalName || !finalPassword) {
             res.status(400).json({success:false, message: "Houve um erro ao adquirir as informações, tente novamente!"});
         }
-
+        
         const userExist = await db.execute(
-            'SELECT id FROM users WHERE email = ?', [rgEmail]
+            'SELECT id FROM users WHERE email = ?', [finalEmail]
         );
-
-        if(userExist > 0) {
+        
+        if(userExist.length > 0) {
             res.status(500).json({success: false, message: "Este usuário já existe, tente fazer login ou redefina sua senha caso tenha se esquecido"})
         }
-
-        const cryptPw = await bcrypt.hash(rgPassword, 10);
-
+        
+        const cryptPw = await bcrypt.hash(finalPassword, 10);
+        
         const createUser = (
             'INSERT INTO users (name, email, password) VALUES (?, ?, ?)'
         )
 
-        await db.execute(createUser, [rgName, rgEmail, cryptPw]);
+        await db.execute(createUser, [finalName, finalEmail, finalPassword]);
 
         if(userExist > 0) {
-            alert("A sua conta foi criada!")
+            res.json({ success: true, message: "Conta criada com sucesso!" });
         }
 
 

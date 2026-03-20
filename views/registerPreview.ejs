@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirme seus Dados</title>
+    <link rel="stylesheet" href="/css/style.css"> </head>
+<body>
+    <div class="container">
+        <h1>Quase lá! Verifique seus dados:</h1>
+        
+        <div class="preview-card">
+            <p><strong>Nome:</strong> <%= user.name %></p>
+            <p><strong>E-mail:</strong> <%= user.email %></p>
+            <p><strong>Telefone:</strong> <%= user.tel || 'Não informado' %></p>
+            <p><strong>Senha:</strong> ****** (Protegida)</p>
+        </div>
+
+        <div class="action">
+            
+            <form action="/confirmRegistration" method="POST" class="confirmRegistration">
+                <input type="hidden" name="finalName" value="<%= user.name %>">
+                <input type="hidden" name="finalEmail" value="<%= user.email %>">
+                <input type="hidden" name="finalPassword" value="<%= user.password %>">
+                <input type="hidden" name="finalTel" value="<%= user.tel %>">
+                <br>
+                
+                <button type="submit" class="btn_rgConfirm" name="btn-saveUser">Tudo certo, criar conta!</button>
+                <button onclick="window.history.back()" class="btn-edit" name="btn-edit">Editar Dados</button>
+            </form>  
+        </div>
+    </div>
+    </html>
+</body>

@@ -1,4 +1,3 @@
-
 // Verificação de email
 const btnEmail = document.querySelector('button[name="emailRequest"]');
 const inputEmail = document.querySelector('input[name="emailConfirmation"]');
@@ -171,6 +170,8 @@ const btnRg = document.querySelector('button[name="btn_rgConfirm"]');
 const firstPw = document.querySelector('input[name="rgPassword"]');
 const ConfirmPw = document.querySelector('input[name="rgConfirmPw"]');
 
+const form = document.querySelector('form');
+
 if (btnRg) {
     btnRg.addEventListener('click', async (e) => {
         e.preventDefault(); 
@@ -181,37 +182,20 @@ if (btnRg) {
         }
 
         if (firstPw.value !== ConfirmPw.value) {
-            alert("Foi encontrado discrepancia de senhas, por favor tente novamente!");
+            alert("As senhas não coincidem, por favor tente novamente!");
             return; 
         }
 
         try {
-            const userInfos = { 
-                rgName: rgName.value,
-                rgEmail: rgEmail.value,
-                rgPassword: ConfirmPw.value,
-                rgTel: rgTel.value
-            };
+            console.log("Dados validados! Indo para a tela de conferência...");
+            
+            form.action = '/registerPreview';
+            form.method = 'POST';
+            form.submit(); 
 
-            const response = await fetch('/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(userInfos)
-            });
-
-            const result = await response.json();
-
-            if (result.success) {
-                alert("Usuário criado com sucesso!");
-                window.location.href = '/'; 
-            } else {
-                alert("Erro: " + result.message);
-            }
         } catch (error) {
-            console.error("Erro ao enviar as userInfos:", error);
-            alert("Erro na criação da conta, tente novamente!");
+            console.error("Erro ao redirecionar:", error);
+            alert("Erro ao processar o registro, tente novamente!");
         }
     });
 }
