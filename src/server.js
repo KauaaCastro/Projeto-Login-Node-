@@ -50,7 +50,9 @@ app.post('/verify-email', async (req,res) => {
 
     try{
         if(!inputEmail) {
-            return res.status(400).json({ success: false, message: "Por favor insira um email válido!"});
+            return res.status(400).json({
+                 success: false,
+                message: "Por favor insira um email válido!"});
 
         }
 
@@ -96,7 +98,9 @@ app.post('/verify-email', async (req,res) => {
             })
         } else {
             console.log("E-mail não cadastrado:", inputEmail);
-            return res.status(404).json({success: false, message: "Este e-mail não está cadastrado em nosso banco de dados"});
+            return res.status(404).json({
+                success: false,
+                 message: "Este e-mail não está cadastrado em nosso banco de dados"});
         };
     } catch (error) {
         console.log("Ocorreu um erro ao adquirir o email, tente novamente!");
@@ -108,7 +112,9 @@ app.post('/verify-code', async (req, res) => {
     const {code, email} = req.body;
 
     if (!code || !email) {
-        return res.status(400).json({ success: false, message: "Código não enviado!" });
+        return res.status(400).json({ 
+            success: false, 
+            message: "Código não enviado!" });
     }
 
     try{
@@ -117,14 +123,20 @@ app.post('/verify-code', async (req, res) => {
     );
 
     if(rows.length > 0) {
-        return res.status(200).json({ success: true, message: "Código Verificado!" });
+        return res.status(200).json({ 
+            success: true, 
+            message: "Código Verificado!" });
     } else {
-        return res.status(400).json({ success: false, message: "Código inválido ou expirado!" });
+        return res.status(400).json({ 
+            success: false, 
+            message: "Código inválido ou expirado!" });
     }
   } catch (error) {
     console.log("Ocorreu um erro ao verificar o tokken", error);
     if (!res.headersSent) {
-            return res.status(500).json({ success: false, message: "Erro interno no servidor." });
+            return res.status(500).json({ 
+                success: false, 
+                message: "Erro interno no servidor." });
         }
     }
 });
@@ -136,11 +148,15 @@ app.post('/redefPassword', async (req, res) => {
 
     try {
         if(!email || !code || !newPassword || !ConfirmPassword){
-            return res.status(400).json({success: false, message: "Dados incompletos!"});
+            return res.status(400).json({
+                success: false, 
+                message: "Dados incompletos!"});
         }
 
         if(newPassword !== ConfirmPassword) {
-            return res.status(400).json({success: false, message: "Ops, uma senha está diferente da outra!"});
+            return res.status(400).json({
+                success: false, 
+                message: "Ops, uma senha está diferente da outra!"});
         }
             const hashedPsw = await bcrypt.hash(newPassword,10);
 
@@ -150,9 +166,13 @@ app.post('/redefPassword', async (req, res) => {
             );
 
             if(result.affectedRows > 0) {
-                return res.json({success: true, message: "Senha alterada com sucesso!"});
+                return res.json({
+                    success: true,
+                     message: "Senha alterada com sucesso!"});
             } else {
-                return res.status(400).json({success: false, message: "Link Expirado!"});
+                return res.status(400).json({
+                    success: false,
+                    message: "Link Expirado!"});
             }
 
         } catch (error) {
@@ -163,8 +183,6 @@ app.post('/redefPassword', async (req, res) => {
 
 app.post('/register', async (req, res) => {
     const {rgEmail, rgPassword, rgName, rgTel} = req.body;
-    
-    
 });
 
 app.post('/registerPreview', async (req, res) => {
@@ -185,33 +203,54 @@ app.post('/confirmRegistration', async (req, res) => {
     
     try {
         if (!finalEmail || !finalName || !finalPassword) {
-            res.status(400).json({success:false, message: "Houve um erro ao adquirir as informações, tente novamente!"});
+            return res.status(400).json({success:false, message: "Houve um erro ao adquirir as informações, tente novamente!"});
         }
         
-        const userExist = await db.execute(
-            'SELECT id FROM users WHERE email = ?', [finalEmail]
+        const [userExist] = await db.execute(
+            'SELECT id FROM users WHERE email = ? OR name = ?', 
+            [finalEmail, finalName]
         );
-        
+
         if(userExist.length > 0) {
-            res.status(500).json({success: false, message: "Este usuário já existe, tente fazer login ou redefina sua senha caso tenha se esquecido"})
+            return res.status(400).send(`
+                <script>
+                    alert('Erro: Este e-mail ou nome de usuário já está em uso!');
+                    window.history.back(); 
+                </script>
+            `);
         }
-        
+            
         const cryptPw = await bcrypt.hash(finalPassword, 10);
         
-        const createUser = (
+        
+        const sqlInsert = (
             'INSERT INTO users (name, email, password) VALUES (?, ?, ?)'
         )
 
-        await db.execute(createUser, [finalName, finalEmail, finalPassword]);
+        await db.execute(sqlInsert, [finalName, finalEmail, cryptPw]);
 
-        if(userExist > 0) {
-            res.json({ success: true, message: "Conta criada com sucesso!" });
+        const [userVerify] = await db.execute(
+            'SELECT id FROM users WHERE email = ?', [finalEmail]
+        );
+
+        if(userVerify.length > 0) {
+            return res.send(`
+            <script>
+                alert('Conta criada com sucesso!');
+                window.location.href = '/'; 
+            </script>
+            `);
         }
-
-
-    } catch (error) {
+        
+        } catch (error) {
         console.log("Ocorreu um erro ao enviar as informações ao servidor!");
         console.log(error);
+
+        if(!res.headerSent) {
+            return res.status(500).json({
+                success:false, message:"Erro interno ao salvar os dados!"
+            });
+        }
     }
 });
 
