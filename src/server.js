@@ -16,7 +16,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '..', 'views'));
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(public_path, 'login.html')); // ALTERAR POSTERIORMENTE
+    res.sendFile(path.join(public_path, 'confirmTokken.html')); // ALTERAR POSTERIORMENTE
 });
 
 app.post('/', async (req, res) => {
@@ -182,24 +182,23 @@ app.post('/redefPassword', async (req, res) => {
 })
 
 app.post('/register', async (req, res) => {
-    const {rgEmail, rgPassword, rgName, rgTel} = req.body;
+    const {rgEmail, rgPassword, rgName} = req.body;
 });
 
 app.post('/registerPreview', async (req, res) => {
-    const { rgName, rgEmail, rgPassword, rgTel } = req.body;
+    const { rgName, rgEmail, rgPassword } = req.body;
     
     res.render('registerPreview', {
         user: {
             name: rgName,
             email: rgEmail,
             password: rgPassword,
-            tel: rgTel
         }
     });
 });
 
 app.post('/confirmRegistration', async (req, res) => {
-    const {finalName, finalEmail, finalPassword, finalTel}= req.body;
+    const {finalName, finalEmail, finalPassword}= req.body;
     
     try {
         if (!finalEmail || !finalName || !finalPassword) {

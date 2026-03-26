@@ -10,11 +10,11 @@
 <body>
     <form>
         <h1> Crie sua Conta </h1>
-        <input name="rgName" type="text" placeholder="Insira o nome do usuário">
-        <input name="rgEmail" type="email" placeholder="Insira seu email">
-        <input name="rgPassword" type="password" placeholder="Crie uma senha de acesso">
-        <input name="rgConfirmPw" type="password" placeholder="Confirme sua senha de acesso">
-        <input name="rgTel" type="tel" placeholder="Insira seu número de telefone (opcional)">
+        <input name="rgName" type="text" placeholder="Insira o nome do usuário" required>
+        <input name="rgEmail" type="email" class="userMail" placeholder="Insira seu email" required>
+        <input name="rgPassword" type="password" placeholder="Crie uma senha de acesso" minlength="8" required>
+        <input name="rgConfirmPw" type="password" placeholder="Confirme sua senha de acesso" minlength="8" required>
+        <a href="login.html" class="rgToLogin" > Fazer login </a>
 
         <br>
 

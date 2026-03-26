@@ -117,6 +117,10 @@ if (btnRedef && inputNewPsw && inputConfirm) {
         const recEmail = sessionStorage.getItem('userEmail');
         const recCode = sessionStorage.getItem('userCode');
 
+        if(pswValue.value.length < 8) {
+            alert("A senha precisa ter no mínimo oito digitos!");
+            return;
+        }
 
         if (pswValue !== confirmValue) {
             alert("As senhas não coincidem!");
@@ -164,7 +168,6 @@ if (btnRedef && inputNewPsw && inputConfirm) {
 // Tela de registro de Usuário
 const rgName = document.querySelector('input[name="rgName"]');
 const rgEmail = document.querySelector('input[name="rgEmail"]');
-const rgTel = document.querySelector('input[name="rgTel"]');
 const btnRg = document.querySelector('button[name="btn_rgConfirm"]');
 
 const firstPw = document.querySelector('input[name="rgPassword"]');
@@ -179,6 +182,11 @@ if (btnRg) {
         if (!rgName.value || !rgEmail.value || !firstPw.value || !ConfirmPw.value) {
             alert("Por favor preencha todos os campos obrigatórios antes de prosseguir!");
             return; 
+        }
+
+        if(firstPw.value.length < 8) {
+            alert("As senhas precisam ter no mínimo 8 digitos!");
+            return;
         }
 
         if (firstPw.value !== ConfirmPw.value) {
