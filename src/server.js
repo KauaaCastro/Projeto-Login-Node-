@@ -16,7 +16,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '..', 'views'));
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(public_path, 'confirmTokken.html')); // ALTERAR POSTERIORMENTE
+    res.sendFile(path.join(public_path, 'Login.html')); // ALTERAR POSTERIORMENTE
 });
 
 app.post('/', async (req, res) => {
