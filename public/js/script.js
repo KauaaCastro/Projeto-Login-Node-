@@ -117,7 +117,7 @@ if (btnRedef && inputNewPsw && inputConfirm) {
         const recEmail = sessionStorage.getItem('userEmail');
         const recCode = sessionStorage.getItem('userCode');
 
-        if(pswValue.value.length < 8) {
+        if(pswValue.length < 8) {
             alert("A senha precisa ter no mínimo oito digitos!");
             return;
         }

@@ -16,7 +16,7 @@ INSERT INTO
     users (name, email, password)
 VALUES (
         'Kauã Ricardo',
-        'dc.admKauaCastro@gmail.com',
+        'kaua@gmail.com',
         '$2b$10$fZwc8NOXGDio6/w2Sc0Lxe0i83lIkX.dD9KW/kd7Uyyrg0W0EiTei'
     );
 
