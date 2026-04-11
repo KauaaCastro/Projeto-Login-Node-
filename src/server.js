@@ -5,6 +5,14 @@ const app = express();
 const bcrypt = require("bcrypt");
 const db = require("./config/db");
 const mailer = require('./config/mailer');
+const session = require('express-session');
+
+app.use(session({
+  secret: process.env.SESSIONKEY,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false } 
+}));
 
 const public_path = path.join(__dirname, '..', 'public');
 const server_port = process.env.PORT;

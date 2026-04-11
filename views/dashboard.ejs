@@ -1,17 +1,87 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Perfil de <%= userName %> </title>
-    <link rel="stylesheet" href="/css/style.css">
+    <title>Controle de Gastos</title>
+    <link rel="stylesheet" href="/css/inapp.css">
 </head>
+
 <body>
-    <div class="container-sucesso">
-        <h1> Olá, <%= userName %>! 👋 </h1>
-        <p> Login realizado com sucesso. </p>
-        <a href="/"> Sair </a>
-    </div>
+
+<div class="sidebar">
+    <div class="user">Olá, <%= (typeof userName !== 'undefined') ? userName : '...' %></div>
+    <h2>💰 Finanças</h2>
+
+    <button>Criar pasta</button>
+    <button>Excluir pasta</button>
+    <button>Configurações de pasta</button>
+    <button>Cadastrar fatura</button>
+    <button>Parcelados</button>
+    <button>Filtros</button>
+</div>
+
+<div class="main">
+
+<div class="header">
+    <h1>Seus Gastos</h1>
+
+    <select class="toggle">
+        <option value="1">Janeiro</option>
+        <option value="2">Fevereiro</option>
+        <option value="3">Março</option>
+        <option value="4" selected>Abril</option>
+    </select>
+</div>
+
+<div class="top-controls">
+    <select class="toggle">
+        <option value="all">Tudo</option>
+        <%# Loop correto para as PASTAS no select %>
+        <% if (typeof pastas !== 'undefined' && pastas.length > 0) { %>
+            <% pastas.forEach(pasta => { %>
+                <option value="<%= pasta.id %>"><%= pasta.name %></option>
+            <% }) %>
+        <% } %>
+    </select>
+
+    <input type="text" class="search-input" placeholder="Pesquisar...">
+</div>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Produto</th><th>Valor</th><th>Data</th><th>Cartão</th><th>Pasta</th>
+            </tr>
+        </thead>
+        <tbody>
+            <%# Loop corrigido: usando 'itens' conforme o seu res.render anterior %>
+            <% if (typeof itens !== 'undefined' && itens.length > 0) { %>
+                <% itens.forEach(gasto => { %>
+                    <tr>
+                        <%# Ajustado para os nomes exatos das colunas do seu SQL %>
+                        <td><%= gasto.description %></td>
+                        <td>R$ <%= Number(gasto.amount).toFixed(2) %></td>
+<td><%= new Date(gasto.purchase_date).toLocaleDateString('pt-BR', {timeZone: 'UTC'}) %></td>                        <td><%= gasto.card_name %></td>
+                        <td><%= gasto.folder_name %></td>
+                    </tr>
+                <% }) %>
+            <% } else { %>
+                <tr>
+                    <td colspan="5" style="text-align: center; color: #888;">
+                        Nenhum registro encontrado.
+                    </td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+</div>
+
+<div class="total">
+    Total de contas: <%= (typeof itens !== 'undefined') ? itens.length : 0 %>
+</div>
+
+</div>
+
 </body>
 </html>
-

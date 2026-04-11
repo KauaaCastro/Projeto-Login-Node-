@@ -1,0 +1,162 @@
+
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", sans-serif;
+    height: 100vh;
+    display: flex;
+    background: linear-gradient(135deg, #1a002b, #3a0066, #6202bc);
+    color: white;
+    overflow: hidden;
+}
+
+.sidebar {
+    width: 240px;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(12px);
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border-right: 1px solid rgba(255,255,255,0.1);
+}
+
+.sidebar h2 {
+    margin-bottom: 20px;
+    font-size: 20px;
+    color: #c084fc;
+}
+
+.sidebar button {
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255,255,255,0.05);
+    color: white;
+    text-align: left;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.sidebar button:hover {
+    background: rgba(138, 43, 226, 0.4);
+}
+
+.main {
+    flex: 1;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.header h1 {
+    font-size: 26px;
+}
+
+.toggle {
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    background: hsl(271, 92%, 35%);
+    color: white;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.actions button {
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+    font-weight: bold;
+}
+
+.add {
+    background: #8a2be2;
+}
+
+.edit {
+    background: rgba(255,255,255,0.1);
+}
+
+.remove {
+    background: rgba(207,42,42,0.6);
+}
+
+.actions button:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+
+.table-container {
+    flex: 1;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 14px;
+    text-align: left;
+}
+
+th {
+    background: rgba(255,255,255,0.05);
+    color: #c084fc;
+}
+
+tr {
+    transition: 0.2s;
+}
+
+tr:hover {
+    background: rgba(255,255,255,0.05);
+}
+
+@media (max-width: 900px) {
+    .sidebar {
+        display: none;
+    }
+}
+
+.total {
+    margin-top:10px;
+    padding:15px;
+    background: rgba(0,0,0,0.4);
+    border-radius:10px;
+    text-align:right;
+}
+
+.search-input {
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    outline: none;
+    min-width: 200px;
+    margin-bottom: 20px;
+}
+
+.search-input::placeholder {
+    color: #ccc;
+}

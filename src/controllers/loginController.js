@@ -25,7 +25,13 @@ module.exports = {
 
     if(validationPsw){
         console.log("Usuário verificado, senha correta!");
-        res.render('dashboard', {userName: user.name});
+          console.log("Usuário verificado, senha correta!");
+        req.session.user = {
+        id: user.id,
+        name: user.name
+    };
+    
+    return res.redirect('/dashboard');
     } else {
         res.send("<script>alert('Senha incorreta!'); window.location.href='/';</script>");
     }
