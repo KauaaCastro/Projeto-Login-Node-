@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Controle de Gastos</title>
     <link rel="stylesheet" href="/css/inapp.css">
+    <link rel="stylesheet" href="/css/modal.css">
 </head>
 
 <body>
@@ -12,12 +13,13 @@
     <div class="user">Olá, <%= (typeof userName !== 'undefined') ? userName : '...' %></div>
     <h2>💰 Finanças</h2>
 
-    <button>Criar pasta</button>
-    <button>Excluir pasta</button>
-    <button>Configurações de pasta</button>
-    <button>Cadastrar fatura</button>
-    <button>Parcelados</button>
-    <button>Filtros</button>
+    <button name="createFolder" class="addFolder" onclick="openModal()">Criar pasta</button>
+    <button name="excludeFolder">Excluir pasta</button>
+    <button name="configFolder">Configurações de pasta</button>
+    <button name="newInvoice">Cadastrar fatura</button>
+    <button name="installment">Parcelados</button>
+    <button name="filters">Filtros</button>
+
 </div>
 
 <div class="main">
@@ -36,7 +38,6 @@
 <div class="top-controls">
     <select class="toggle">
         <option value="all">Tudo</option>
-        <%# Loop correto para as PASTAS no select %>
         <% if (typeof pastas !== 'undefined' && pastas.length > 0) { %>
             <% pastas.forEach(pasta => { %>
                 <option value="<%= pasta.id %>"><%= pasta.name %></option>
@@ -55,14 +56,12 @@
             </tr>
         </thead>
         <tbody>
-            <%# Loop corrigido: usando 'itens' conforme o seu res.render anterior %>
             <% if (typeof itens !== 'undefined' && itens.length > 0) { %>
                 <% itens.forEach(gasto => { %>
                     <tr>
-                        <%# Ajustado para os nomes exatos das colunas do seu SQL %>
                         <td><%= gasto.description %></td>
                         <td>R$ <%= Number(gasto.amount).toFixed(2) %></td>
-<td><%= new Date(gasto.purchase_date).toLocaleDateString('pt-BR', {timeZone: 'UTC'}) %></td>                        <td><%= gasto.card_name %></td>
+                        <td><%= new Date(gasto.purchase_date).toLocaleDateString('pt-BR', {timeZone: 'UTC'}) %></td>                        <td><%= gasto.card_name %></td>
                         <td><%= gasto.folder_name %></td>
                     </tr>
                 <% }) %>
@@ -81,7 +80,23 @@
     Total de contas: <%= (typeof itens !== 'undefined') ? itens.length : 0 %>
 </div>
 
+<div class="modal-overlay" id="modal">
+    <div class="modal" >
+        <h2> Nova Pasta </h2>
+        <p> Insira o nome da Pasta: </p>
+        
+        <input placeholder="Nome">
+
+        <div class="modal-buttons">
+            <label class="buttonFolder">
+            <button class="cancel" onclick="closeModal()"> Cancelar </button>
+            <button class="add"> Confirmar </button>
+            </label>
+        </div>
+    </div>
+</div>
 </div>
 
+<script src="/js/dashboardScript.js"></script>
 </body>
 </html>

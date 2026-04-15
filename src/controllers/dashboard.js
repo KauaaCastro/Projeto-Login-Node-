@@ -12,10 +12,13 @@ module.exports = {
 
             const [purchases] = await db.query('SELECT * FROM v_expenses_details WHERE user_id = ?', [userID]);
 
+            const [cards] =  await db.query('SELECT * FROM cards WHERE user_id = ?', [userID]);
+
             res.render('dashboard', {
                 userName: req.session.user.name,
                 pastas: folder,
-                itens: purchases 
+                itens: purchases,
+                cards: cards
             });
 
         } catch (error) {
