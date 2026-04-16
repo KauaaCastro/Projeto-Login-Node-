@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS folders (
     user_id CHAR(36) NOT NULL,
     name VARCHAR(50) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    card_id INT NOT NULL
+    card_id INT
 );
 
 -- DataBase Cards --

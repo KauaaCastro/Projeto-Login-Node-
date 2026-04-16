@@ -21,7 +21,7 @@ function openModal(type) {
     
     if (type === 'cards') {
         title.innerText = "Cadastrar novo cartão";
-        instruction.innerText = "Insira o nome do cartão:";
+        instruction.innerText = "Insira o nome do banco:";
         groupCard.style.display = 'block';
         
         confirmBtn.onclick = newCard; 
