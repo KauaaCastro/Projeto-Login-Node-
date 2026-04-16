@@ -13,13 +13,14 @@
     <div class="user">Olá, <%= (typeof userName !== 'undefined') ? userName : '...' %></div>
     <h2>💰 Finanças</h2>
 
-    <button name="createFolder" class="addFolder" onclick="openModal()">Criar pasta</button>
+    <button name="createFolder" class="addFolder" onclick="openModal('folders')">Criar pasta</button>
     <button name="excludeFolder">Excluir pasta</button>
-    <button name="configFolder">Configurações de pasta</button>
-    <button name="newInvoice">Cadastrar fatura</button>
+    <button name="selectFolder">Selecionar pasta</button>
+    <button name="configFolder">Configurar pasta</button>
+    <button name="insertbuy">Inserir compra</button>
+    <button name="newInvoice">Cadastrar parcela</button>
     <button name="installment">Parcelados</button>
-    <button name="filters">Filtros</button>
-
+    <button name="insertCard" onclick="openModal('cards')">Cadastrar cartões</button>
 </div>
 
 <div class="main">
@@ -80,21 +81,31 @@
     Total de contas: <%= (typeof itens !== 'undefined') ? itens.length : 0 %>
 </div>
 
-<div class="modal-overlay" id="modal">
-    <div class="modal" >
-        <h2> Nova Pasta </h2>
-        <p> Insira o nome da Pasta: </p>
+<div class="modal-overlay" id="universalModal" style="display: none;">
+    <div class="modal">
+        <h2 id="modalTitle">Título Dinâmico</h2>
+        <p id="modalInstruction">Instrução Dinâmica</p>
         
-        <input id="nameFolder" placeholder="Nome">
+        <div id="groupFolder" style="display: none;">
+            <input id="nameFolder" placeholder="Nome da Pasta">
+        </div>
+
+        <div id="groupCard" style="display: none;">
+            <input id="cardBank" placeholder="Nome do Banco">
+            <p> Atribua um nome ao cartão </p>
+            <input id="cardName" placeholder="Nome/Apelido do cartão">
+            <p>Insira a data de fechamento do cartão</p>
+            <input type="number" id="closeDate">
+
+            <p>Insira a data de vencimento do cartão</p>
+            <input type="number" id="endDate">
+        </div>
 
         <div class="modal-buttons">
-            <label class="buttonFolder">
             <button class="cancel" onclick="closeModal()"> Cancelar </button>
-            <button name="confirmFolder" class="add" onclick="createFolder()"> Confirmar </button>
-            </label>
+            <button id="confirmBtn" class="add"> Confirmar </button>
         </div>
     </div>
-</div>
 </div>
 
 <script src="/js/dashboardScript.js"></script>

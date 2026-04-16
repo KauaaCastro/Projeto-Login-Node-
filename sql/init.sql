@@ -16,7 +16,7 @@ INSERT IGNORE INTO users (name, email, password)
 VALUES (
     'Kauã Ricardo',
     'kaua@gmail.com',
-    '$2b$10$fZwc8NOXGDio6/w2Sc0Lxe0i83lIkX.dD9KW/kd7Uyyrg0W0EiTei'
+    '$2b$10$qfT3JBdh5UPYwSHMFRgtiuqNYyZT5o1vqQnpXEkM7v1Vi.XMbd9eG'
 );
 
 ALTER TABLE users
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS folders (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id CHAR(36) NOT NULL,
     name VARCHAR(50) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     card_id INT NOT NULL
 );
 
@@ -36,7 +36,10 @@ CREATE TABLE IF NOT EXISTS folders (
 CREATE TABLE IF NOT EXISTS cards (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id CHAR(36) NOT NULL,
+    card_name VARCHAR (50) NOT NULL,
     bank VARCHAR(50) NOT NULL,
+    endDate INT NOT NULL,
+    closeDate INT,
     FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
@@ -50,6 +53,8 @@ CREATE TABLE IF NOT EXISTS phFolders (
     amount DECIMAL(10, 2) NOT NULL,
     purchase_date DATE NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    total_installment INT DEFAULT 1,
+    current_installment INT DEFAULT 1,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (folder_id) REFERENCES folders(id),
     FOREIGN KEY (card_id) REFERENCES cards(id)

@@ -9,9 +9,7 @@ module.exports = {
             console.log(userID);
 
             const [folder] = await db.query('SELECT * FROM folders WHERE user_id = ?', [userID]);
-
             const [purchases] = await db.query('SELECT * FROM v_expenses_details WHERE user_id = ?', [userID]);
-
             const [cards] =  await db.query('SELECT * FROM cards WHERE user_id = ?', [userID]);
 
             res.render('dashboard', {
@@ -30,7 +28,7 @@ module.exports = {
         }
     },
 
-createFolder: async(req, res) => {
+    createFolder: async(req, res) => {
         try {
             if (!req.session.user) {
                 return res.status(401).json({ error: "Sessão expirada. Faça login novamente." });
@@ -48,6 +46,30 @@ createFolder: async(req, res) => {
             console.log("Erro ao salvar pasta:");
             console.error(error.message);
             return res.status(500).json({error: "Erro interno no servidor"});
+        }
+    },
+
+    createCard: async(req, res) => {
+        try {
+            if(!req.session.user) {
+                return res.status(400).json({ error: "Sessão expirada, faça login novamente!"});
+            }
+
+            const userId = req.session.user.id;
+            const cardName = req.body.cardName;
+            const cardBank = req.body.cardBank;
+            const endDate = req.body.endDate;
+            const closeDate = req.body.closeDate;
+
+            const query = 'INSERT INTO cards (user_id, card_name, bank, endDate, closeDate) VALUES (?, ?, ?, ?, ?)';
+            await db.execute(query, [userId, cardName, cardBank, endDate, closeDate]);
+
+            return res.status(200).json({message: "Cartão cadastrado com sucesso!"});
+
+        } catch (error) {
+            console.log("Erro cartão: Servidor --> Banco de dados");
+            console.log("----------------------------------------");
+            console.log(error);
         }
     }
 }
