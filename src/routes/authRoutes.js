@@ -19,5 +19,6 @@ router.post('/confirmRegistration', registerController.confirmRegister);
 
 router.get('/dashboard', dashboard.randerDashboard);
 router.post('/createFolder', dashboard.createFolder);
+router.post('/createCard', dashboard.createCard);
 
 module.exports = router;

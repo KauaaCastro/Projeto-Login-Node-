@@ -20,6 +20,7 @@
     background: rgba(20,20,20,0.9);
     border-radius: 12px;
     padding: 25px;
+    align-items: center;
 
     box-shadow: 0 0 30px rgba(0,0,0,0.5);
 }
@@ -30,7 +31,7 @@
 }
 
 .modal input {
-    width: 100%;
+    width: 380px;
     padding: 10px;
     margin-bottom: 10px;
 
@@ -42,16 +43,25 @@
 }
 
 .modal-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 15px;
+    display: flex;            
+    justify-content: center; 
+   align-items: center;     
+    gap: 15px;              
+    margin-top: 25px;       
+    width: 100%;            
 }
 
 .modal-buttons button {
-    padding: 10px 15px;
+    padding: 10px 20px;
     border-radius: 8px;
     border: none;
     cursor: pointer;
+    font-weight: bold;
+    transition: opacity 0.2s;
+}
+
+.modal-buttons button:hover {
+    opacity: 0.8;
 }
 
 .confirm {
@@ -66,6 +76,7 @@
     display: flex;
 }
 
-.buttonFolder {
-    margin-left: 220px;
+.buttonFolder, .buttonCards {
+    align-items: center;
 }
+
