@@ -28,5 +28,30 @@ module.exports = {
             console.log("----------------------");
             res.status(500).send("Erro no carregamento de dados do usuário");
         }
+    },
+
+createFolder: async(req, res) => {
+        try {
+            // 1. Verificação de segurança (Sempre faça isso!)
+            if (!req.session.user) {
+                return res.status(401).json({ error: "Sessão expirada. Faça login novamente." });
+            }
+
+            const folderCr = req.body.nameFolder;
+            
+            // 2. CORREÇÃO: Pegamos o .id do usuário, não o usuário inteiro
+            const userId = req.session.user.id; 
+
+            // 3. Execução no banco
+            const query = 'INSERT INTO folders (user_id, name) VALUES (?, ?)';
+            await db.execute(query, [userId, folderCr]);
+
+            return res.status(200).json({message: "Pasta criada com sucesso!"});
+
+        } catch (error) {
+            console.log("Erro ao salvar pasta:");
+            console.error(error.message);
+            return res.status(500).json({error: "Erro interno no servidor"});
+        }
     }
 }

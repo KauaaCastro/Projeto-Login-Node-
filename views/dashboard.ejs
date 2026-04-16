@@ -85,12 +85,12 @@
         <h2> Nova Pasta </h2>
         <p> Insira o nome da Pasta: </p>
         
-        <input placeholder="Nome">
+        <input id="nameFolder" placeholder="Nome">
 
         <div class="modal-buttons">
             <label class="buttonFolder">
             <button class="cancel" onclick="closeModal()"> Cancelar </button>
-            <button class="add"> Confirmar </button>
+            <button name="confirmFolder" class="add" onclick="createFolder()"> Confirmar </button>
             </label>
         </div>
     </div>
