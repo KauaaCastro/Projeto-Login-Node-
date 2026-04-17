@@ -14,9 +14,8 @@
     <h2>💰 Finanças</h2>
 
     <button name="createFolder" class="addFolder" onclick="openModal('folders')">Criar pasta</button>
-    <button name="excludeFolder">Excluir pasta</button>
-    <button name="selectFolder">Selecionar pasta</button>
-    <button name="configFolder">Configurar pasta</button>
+    <button name="excludeFolder" onclick="openModal('exFolders')">Excluir pasta</button>
+        <button name="configFolder">Configurar pasta</button>
     <button name="insertbuy">Inserir compra</button>
     <button name="newInvoice">Cadastrar parcela</button>
     <button name="installment">Parcelados</button>
@@ -89,6 +88,12 @@
         <div id="groupFolder" style="display: none;">
             <input id="nameFolder" placeholder="Nome da Pasta">
         </div>
+        
+        <div id="groupExFolder" style="display: none;">
+            <input id="exFolderName" placeholder="Pasta que deseja excluir">
+            <p> Confirme a pasta escrevendo novamente seu nome </p>
+            <input id="exFolderConfirm" placeholder="Confirme a pasta que deseja excluir">
+        </div>
 
         <div id="groupCard" style="display: none;">
             <input id="cardBank" placeholder="Nome do Banco">
@@ -100,6 +105,7 @@
             <p>Insira a data de vencimento do cartão</p>
             <input type="number" id="endDate">
         </div>
+
 
         <div class="modal-buttons">
             <button class="cancel" onclick="closeModal()"> Cancelar </button>

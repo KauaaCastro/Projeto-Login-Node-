@@ -6,9 +6,11 @@ function openModal(type) {
     
     const groupFolder = document.getElementById('groupFolder');
     const groupCard = document.getElementById('groupCard');
+    const groupExFolder = document.getElementById('groupExFolder');
 
     groupFolder.style.display = 'none';
     groupCard.style.display = 'none';
+    groupExFolder.style.display = 'none';
     document.querySelectorAll('input').forEach(input => input.value = '');
 
     if (type === 'folders') {
@@ -17,14 +19,18 @@ function openModal(type) {
         groupFolder.style.display = 'block';
         
         confirmBtn.onclick = createFolder; 
-    } 
-    
-    if (type === 'cards') {
+    } else if (type === 'cards') {
         title.innerText = "Cadastrar novo cartão";
         instruction.innerText = "Insira o nome do banco:";
         groupCard.style.display = 'block';
         
         confirmBtn.onclick = newCard; 
+    } else if(type === 'exFolders') {
+        title.innerText = "Excluir pasta";
+        instruction.innerText = "Digite o nome da pasta que deseja excluir:"
+        groupExFolder.style.display = 'block';
+
+        confirmBtn.onclick = exFolders;
     }
 
     modal.style.display = 'flex';
@@ -124,5 +130,48 @@ async function newCard() {
         console.log(error);
 
         alert("Não foi possível concluir o envio dos dados ao servidor, tente novamente!");
+    }
+}
+
+async function exFolders() {
+    const exFolder = document.getElementById("exFolderName");
+    const confirmFolder = document.getElementById("exFolderConfirm");
+
+    if(!exFolder || !confirmFolder || exFolder.value.trim() === "" || confirmFolder.value.trim() === "") {
+        alert("Preencha os campos corretamente para que possa realizar a exclusão!");
+        return;
+    }
+
+    if(exFolder.value.trim() != confirmFolder.value.trim()) {
+        alert("Os nomes digitados são divergentes, insira o nome da pasta e dps confirme-a repetindo o nome da pasta");
+        document.getElementById("exFolderName").value = "";
+        document.getElementById("exFolderConfirm").value = "";
+        return;
+    }
+
+    try {
+        const data = {
+            exFolder: exFolder.value.trim(),
+            confirmFolder: confirmFolder.value.trim(),
+        }
+
+        const response = await fetch('/excludeFolders', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+
+        if(response.ok) {
+            alert("Pasta excluida com sucesso");
+            closeModal();
+        } else {
+            alert("Pasta não encontrada!");            
+            document.getElementById("exFolderName").value = "";
+            document.getElementById("exFolderConfirm").value = "";
+        }
+    } catch (error) {
+        console.log("Erro: dashboardScript --> server");
+        console.log("---------------------------------");
+        console.log(error);
     }
 }

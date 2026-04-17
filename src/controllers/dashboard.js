@@ -71,5 +71,41 @@ module.exports = {
             console.log("----------------------------------------");
             console.log(error);
         }
+    },
+
+    excludeFolders: async (req, res) => {
+       try{
+           if(!req.session.user) {
+               return res.status(400).json({ error: "Sessão expirada, faça login novamente!"});
+            }
+            
+            const userId = req.session.user.id;
+            const exFolders = req.body.exFolder;
+            const confirmExFolders = req.body.confirmFolder;
+            
+            
+            const [rows] = await db.execute(
+                'SELECT id FROM folders WHERE name = ? AND user_id = ?',
+                [exFolders, userId]
+            );
+            
+            if (rows.length === 0) {
+            return res.status(404).json({ message: "Pasta não encontrada." });
+            }
+
+            const folderIdToDelete = rows[0].id;
+
+            await db.execute(
+                'DELETE FROM folders WHERE id = ? AND user_id = ?',
+                [folderIdToDelete, userId]
+            );
+
+        return res.status(200).json({ message: "Pasta excluída com sucesso!" });
+
+    } catch (error) {
+            console.log("Erro: server --> data_base");
+            console.log("--------------------------");
+            console.log(error);
+        }
     }
 }
