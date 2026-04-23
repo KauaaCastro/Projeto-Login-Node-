@@ -6,11 +6,14 @@ function openModal(type) {
     
     const groupFolder = document.getElementById('groupFolder');
     const groupCard = document.getElementById('groupCard');
+    const groupPurchase = document.getElementById('groupPurchase');
     const groupExFolder = document.getElementById('groupExFolder');
 
     groupFolder.style.display = 'none';
     groupCard.style.display = 'none';
     groupExFolder.style.display = 'none';
+    groupPurchase.style.display = 'none';
+
     document.querySelectorAll('input').forEach(input => input.value = '');
 
     if (type === 'folders') {
@@ -31,6 +34,12 @@ function openModal(type) {
         groupExFolder.style.display = 'block';
 
         confirmBtn.onclick = exFolders;
+    } else if(type === 'phFolders') {
+        title.innerText = "Cadastrar gastos";
+        instruction.innerText = "Coloque o nome da conta ou do gasto";
+        groupPurchase.style.display = 'block';
+
+        confirmBtn.onclick = phFolders;
     }
 
     modal.style.display = 'flex';
@@ -174,4 +183,12 @@ async function exFolders() {
         console.log("---------------------------------");
         console.log(error);
     }
+}
+
+async function phFolders(){
+    const description = document.getElementById('phDescription');
+    const price = document.getElementById('price');
+    const installmentQuantity = document.getElementById("installmentQuantity");
+    const folder = document.getElementById('phFolder').value;
+    const usedCard = document.getElementById('phCard').value;
 }

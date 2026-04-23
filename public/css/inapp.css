@@ -61,7 +61,7 @@ body {
     font-size: 26px;
 }
 
-.toggle {
+.toggle, .modal-select {
     padding: 10px;
     border-radius: 8px;
     border: none;

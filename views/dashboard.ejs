@@ -15,9 +15,8 @@
 
     <button name="createFolder" class="addFolder" onclick="openModal('folders')">Criar pasta</button>
     <button name="excludeFolder" onclick="openModal('exFolders')">Excluir pasta</button>
-        <button name="configFolder">Configurar pasta</button>
-    <button name="insertbuy">Inserir compra</button>
-    <button name="newInvoice">Cadastrar parcela</button>
+    <button name="configFolder">Configurar pasta</button>
+    <button name="insertbuy" onclick="openModal('phFolders')" >Inserir compra</button>
     <button name="installment">Parcelados</button>
     <button name="insertCard" onclick="openModal('cards')">Cadastrar cartões</button>
 </div>
@@ -106,7 +105,33 @@
             <input type="number" id="endDate">
         </div>
 
+        <div id="groupPurchase" style="display: none;" >
+            <input id="phDescription" placeholder="Nome da compra">
+            <p> Insira o valor da conta </p>
+            <input id="price" type="number" placeholder="Preço da compra">
+            <p> Insira a quantidade de parcelas </p>
+            <input id="installmentQuantity" type="number" placeholder="Quantidade de parcelas">
+            
+            <p>Atribuir à pasta:</p>
+            <select id="phFolder" class="modal-select">
+                <option value="">Nenhuma (Geral)</option>
+                <% if (typeof pastas !== 'undefined') { %>
+                    <% pastas.forEach(pasta => { %>
+                        <option value="<%= pasta.id %>"><%= pasta.name %></option>
+                        <% }) %>
+                        <% } %>
+                    </select>
 
+            <p>Cartão utilizado:</p>
+            <select id="phCard" class="modal-select">
+                <option value="">Dinheiro / Débito</option>
+                <% if (typeof cartoes !== 'undefined') { %>
+                    <% cartoes.forEach(cartao => { %>
+                        <option value="<%= cartao.id %>"><%= cartao.card_name %> (<%= cartao.bank %>)</option>
+                        <% }) %>
+                        <% } %>
+                    </select>
+        </div>
         <div class="modal-buttons">
             <button class="cancel" onclick="closeModal()"> Cancelar </button>
             <button id="confirmBtn" class="add"> Confirmar </button>
