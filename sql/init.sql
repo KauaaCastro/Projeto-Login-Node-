@@ -47,8 +47,8 @@ CREATE TABLE IF NOT EXISTS cards (
 CREATE TABLE IF NOT EXISTS phFolders (
     id INT AUTO_INCREMENT PRIMARY KEY, 
     user_id CHAR(36) NOT NULL,
-    folder_id INT NOT NULL,
-    card_id INT NOT NULL,
+    folder_id INT NULL,
+    card_id INT NULL,
     description VARCHAR(255) NOT NULL,
     amount DECIMAL(10, 2) NOT NULL,
     purchase_date DATE NOT NULL,

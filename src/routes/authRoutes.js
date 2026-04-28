@@ -21,5 +21,6 @@ router.get('/dashboard', dashboard.randerDashboard);
 router.post('/createFolder', dashboard.createFolder);
 router.post('/excludeFolders', dashboard.excludeFolders);
 router.post('/createCard', dashboard.createCard);
+router.post('/savePurchase', dashboard.savePurchase);
 
 module.exports = router;

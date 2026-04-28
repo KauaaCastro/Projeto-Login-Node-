@@ -107,5 +107,41 @@ module.exports = {
             console.log("--------------------------");
             console.log(error);
         }
+    },
+
+    savePurchase: async (req, res) => {
+    try {
+        if (!req.session.user) {
+            return res.status(401).json({ error: "Sessão expirada!" });
+        }
+
+        const userId = req.session.user.id;
+        const { description, price, installments, folderId, cardId } = req.body;
+
+        const finalCardId = cardId ? cardId : null;
+        const finalFolderId = folderId ? folderId : null;
+
+        const query = `
+            INSERT INTO phFolders 
+            (user_id, folder_id, card_id, description, amount, purchase_date, total_installment, current_installment) 
+            VALUES (?, ?, ?, ?, ?, CURDATE(), ?, 1)
+        `;
+
+        await db.execute(query, [
+            userId, 
+            finalFolderId, 
+            finalCardId, 
+            description, 
+            price, 
+            installments || 1
+        ]);
+
+        return res.status(200).json({ message: "Gasto cadastrado com sucesso!" });
+
+    } catch (error) {
+        console.error("Erro ao inserir na tabela phFolders:", error);
+        return res.status(500).json({ error: "Erro ao salvar no banco de dados." });
     }
 }
+}
+

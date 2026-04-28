@@ -5,6 +5,7 @@
     <title>Controle de Gastos</title>
     <link rel="stylesheet" href="/css/inapp.css">
     <link rel="stylesheet" href="/css/modal.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -51,8 +52,12 @@
     <table>
         <thead>
             <tr>
-                <th>Produto</th><th>Valor</th><th>Data</th><th>Cartão</th><th>Pasta</th>
-            </tr>
+                <th>Produto</th>
+                <th>Valor</th>
+                <th>Data</th>
+                <th>Cartão</th>
+                <th>Pasta</th>
+                <th>Parcelas</th> </tr>
         </thead>
         <tbody>
             <% if (typeof itens !== 'undefined' && itens.length > 0) { %>
@@ -60,13 +65,18 @@
                     <tr>
                         <td><%= gasto.description %></td>
                         <td>R$ <%= Number(gasto.amount).toFixed(2) %></td>
-                        <td><%= new Date(gasto.purchase_date).toLocaleDateString('pt-BR', {timeZone: 'UTC'}) %></td>                        <td><%= gasto.card_name %></td>
-                        <td><%= gasto.folder_name %></td>
+                        <td><%= new Date(gasto.purchase_date).toLocaleDateString('pt-BR', {timeZone: 'UTC'}) %></td> 
+                        
+                        <td><%= gasto.card_name ? gasto.card_name : 'Dinheiro / Débito' %></td>
+                        
+                        <td><%= gasto.folder_name ? gasto.folder_name : 'Geral' %></td>
+                        
+                        <td><%= gasto.current_installment || 1 %>/<%= gasto.total_installment || 1 %></td>
                     </tr>
                 <% }) %>
             <% } else { %>
                 <tr>
-                    <td colspan="5" style="text-align: center; color: #888;">
+                    <td colspan="6" style="text-align: center; color: #888;">
                         Nenhum registro encontrado.
                     </td>
                 </tr>
@@ -124,10 +134,10 @@
 
             <p>Cartão utilizado:</p>
             <select id="phCard" class="modal-select">
-                <option value="">Dinheiro / Débito</option>
-                <% if (typeof cartoes !== 'undefined') { %>
-                    <% cartoes.forEach(cartao => { %>
-                        <option value="<%= cartao.id %>"><%= cartao.card_name %> (<%= cartao.bank %>)</option>
+                <option value="">Nenhum</option>
+                <% if (typeof cards !== 'undefined') { %>
+                    <% cards.forEach(cards => { %>
+                        <option value="<%= cards.id %>"><%= cards.card_name %> (<%= cards.bank %>)</option>
                         <% }) %>
                         <% } %>
                     </select>

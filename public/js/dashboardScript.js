@@ -185,10 +185,64 @@ async function exFolders() {
     }
 }
 
-async function phFolders(){
-    const description = document.getElementById('phDescription');
-    const price = document.getElementById('price');
-    const installmentQuantity = document.getElementById("installmentQuantity");
-    const folder = document.getElementById('phFolder').value;
-    const usedCard = document.getElementById('phCard').value;
+async function phFolders() {
+    const description = document.getElementById('phDescription').value.trim();
+    const price = document.getElementById('price').value.trim();
+    const installmentQuantity = document.getElementById("installmentQuantity").value.trim();
+    const folder = document.getElementById('phFolder').value; 
+    const usedCard = document.getElementById('phCard').value;   
+
+    if (!description || !price || !folder) {
+        Swal.fire('Ops!', 'Preencha Descrição, Preço e Pasta obrigatoriamente.', 'warning');
+        return;
+    }
+
+    const data = {
+        description,
+        price: parseFloat(price),
+        installments: parseInt(installmentQuantity) || 1,
+        folderId: folder,
+        cardId: usedCard || null 
+    };
+
+    if (!usedCard) {
+        Swal.fire({
+            title: 'Compra no Dinheiro?',
+            text: "Você não selecionou um cartão. Deseja continuar como pagamento à vista/dinheiro?",
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#8b5cf6',
+            cancelButtonColor: '#444',
+            confirmButtonText: 'Continuar',
+            cancelButtonText: 'Editar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                sendPurchaseData(data);
+            }
+        });
+    } else {
+        sendPurchaseData(data);
+    }
+}
+
+async function sendPurchaseData(data) {
+    try {
+        const response = await fetch('/savePurchase', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            Swal.fire('Sucesso!', 'Gasto cadastrado com sucesso.', 'success')
+                .then(() => window.location.reload());
+        } else {
+            Swal.fire('Erro', result.error || 'Erro ao salvar', 'error');
+        }
+    } catch (error) {
+        console.error("Erro no fetch:", error);
+        Swal.fire('Erro Fatal', 'Não foi possível conectar ao servidor.', 'error');
+    }
 }
