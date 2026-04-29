@@ -68,8 +68,10 @@ SELECT
     p.description,
     p.amount,
     p.purchase_date,
-    f.name AS folder_name,
-    c.bank AS card_name
+    p.current_installment,
+    p.total_installment,
+    c.card_name,
+    f.name AS folder_name
 FROM phFolders p
-JOIN folders f ON p.folder_id = f.id
-JOIN cards c ON p.card_id = c.id;
+LEFT JOIN cards c ON p.card_id = c.id
+LEFT JOIN folders f ON p.folder_id = f.id;

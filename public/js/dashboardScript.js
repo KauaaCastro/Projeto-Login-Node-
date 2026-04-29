@@ -3,16 +3,19 @@ function openModal(type) {
     const title = document.getElementById('modalTitle');
     const instruction = document.getElementById('modalInstruction');
     const confirmBtn = document.getElementById('confirmBtn');
+    const cancelButton = document.getElementById('cancelModal');
     
     const groupFolder = document.getElementById('groupFolder');
     const groupCard = document.getElementById('groupCard');
     const groupPurchase = document.getElementById('groupPurchase');
     const groupExFolder = document.getElementById('groupExFolder');
+    const groupInstallments = document.getElementById('groupInstallments');
 
     groupFolder.style.display = 'none';
     groupCard.style.display = 'none';
     groupExFolder.style.display = 'none';
     groupPurchase.style.display = 'none';
+    groupInstallments.style.display = 'none';
 
     document.querySelectorAll('input').forEach(input => input.value = '');
 
@@ -40,6 +43,13 @@ function openModal(type) {
         groupPurchase.style.display = 'block';
 
         confirmBtn.onclick = phFolders;
+    } else if(type === 'installments') {
+       document.getElementById('modalTitle').innerText = 'Suas Compras Parceladas';
+       document.getElementById('modalInstruction').innerText = 'Acompanhe o andamento das suas faturas:';
+       document.getElementById('groupInstallments').style.display = 'block';
+
+       confirmBtn.style.display = 'none';
+       cancelButton.textContent = "Fechar";
     }
 
     modal.style.display = 'flex';
@@ -47,13 +57,72 @@ function openModal(type) {
 
 function closeModal() {
     document.getElementById('universalModal').style.display = 'none';
+
+    const confirmBtn = document.getElementById('confirmBtn');
+    const cancelButton = document.getElementById('cancelModal');
+    if (confirmBtn) {
+        confirmBtn.style.display = 'block'; 
+        cancelButton.textContent = "Cancelar";
+    }
 }
 
-document.getElementById("universalModal").addEventListener("click", function(e) {
-    if(e.target === this) {
-        closeModal();
+     document.getElementById("universalModal").addEventListener("click", function(e) {
+     if(e.target === this) {
+         closeModal();
     }
-});
+  });
+
+// Toggle funcional
+const folderToggle = document.getElementById('folderToggle');
+
+if (folderToggle) {
+    folderToggle.addEventListener('change', function() {
+        const selectedValue = this.value; 
+        const selectedFolderName = this.options[this.selectedIndex].text; 
+        
+        const tableRows = document.querySelectorAll('.table-container tbody tr');
+
+        tableRows.forEach(row => {
+            if (row.querySelector('td[colspan]')) return;
+
+            const rowFolderName = row.cells[4].textContent.trim();
+
+            if (selectedValue === 'all') {
+                row.style.display = ''; 
+            } else if (rowFolderName === selectedFolderName) {
+                row.style.display = ''; 
+            } else {
+                row.style.display = 'none'; 
+            }
+        });
+
+        atualizarTotalVisivel();
+    });
+}
+
+function atualizarTotalVisivel() {
+    const tableRows = document.querySelectorAll('.table-container tbody tr');
+    let novoTotal = 0;
+
+    tableRows.forEach(row => {
+        if (row.style.display !== 'none' && !row.querySelector('td[colspan]')) {
+            let textValor = row.cells[1].textContent;
+            
+            let valorNumerico = parseFloat(
+                textValor.replace('R$', '').replace(/\./g, '').replace(',', '.').trim()
+            );
+            
+            novoTotal += valorNumerico;
+        }
+    });
+
+    const divTotal = document.querySelector('.total');
+    if (divTotal) {
+        divTotal.innerHTML = `Total de contas: R$ ${novoTotal.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+    }
+}
+
+//Criação de pastas
 
 async function createFolder() {
     const nameFolder = document.getElementById("nameFolder");
@@ -90,7 +159,7 @@ async function createFolder() {
     }
 }
 
-
+// Criação de cartão
 async function newCard() {
     const cardBank = document.getElementById("cardBank");
     const closeDate = document.getElementById("closeDate");
@@ -142,6 +211,8 @@ async function newCard() {
     }
 }
 
+//Exclusão de pastas
+
 async function exFolders() {
     const exFolder = document.getElementById("exFolderName");
     const confirmFolder = document.getElementById("exFolderConfirm");
@@ -185,21 +256,45 @@ async function exFolders() {
     }
 }
 
+const priceInput = document.getElementById('price');
+
+if (priceInput) {
+    priceInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, ''); 
+        let numericValue = (Number(value) / 100);
+        
+        e.target.value = numericValue.toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+        });
+    });
+
+    priceInput.addEventListener('click', function(e) {
+        let length = e.target.value.length;
+        e.target.setSelectionRange(length, length);
+    });
+}
+
+//Funcionamento da adição de produtos
+
 async function phFolders() {
     const description = document.getElementById('phDescription').value.trim();
-    const price = document.getElementById('price').value.trim();
+    const rawPrice = document.getElementById('price').value.trim(); 
     const installmentQuantity = document.getElementById("installmentQuantity").value.trim();
     const folder = document.getElementById('phFolder').value; 
     const usedCard = document.getElementById('phCard').value;   
 
-    if (!description || !price || !folder) {
+    if (!description || !rawPrice || !folder) {
         Swal.fire('Ops!', 'Preencha Descrição, Preço e Pasta obrigatoriamente.', 'warning');
         return;
     }
 
+    let cleanPrice = rawPrice.replace('R$', '').replaceAll('.', '').trim();
+    cleanPrice = cleanPrice.replace(',', '.');
+
     const data = {
         description,
-        price: parseFloat(price),
+        price: parseFloat(cleanPrice),
         installments: parseInt(installmentQuantity) || 1,
         folderId: folder,
         cardId: usedCard || null 
@@ -246,3 +341,4 @@ async function sendPurchaseData(data) {
         Swal.fire('Erro Fatal', 'Não foi possível conectar ao servidor.', 'error');
     }
 }
+

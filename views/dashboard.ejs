@@ -15,11 +15,11 @@
     <h2>💰 Finanças</h2>
 
     <button name="createFolder" class="addFolder" onclick="openModal('folders')">Criar pasta</button>
+    <button name="insertCard" onclick="openModal('cards')">Cadastrar cartões</button>
+    <button name="insertbuy" onclick="openModal('phFolders')" >Inserir compra</button>
+    <button name="installment" onclick="openModal('installments')">Parcelados</button>
     <button name="excludeFolder" onclick="openModal('exFolders')">Excluir pasta</button>
     <button name="configFolder">Configurar pasta</button>
-    <button name="insertbuy" onclick="openModal('phFolders')" >Inserir compra</button>
-    <button name="installment">Parcelados</button>
-    <button name="insertCard" onclick="openModal('cards')">Cadastrar cartões</button>
 </div>
 
 <div class="main">
@@ -36,7 +36,7 @@
 </div>
 
 <div class="top-controls">
-    <select class="toggle">
+    <select id="folderToggle" class="toggle">
         <option value="all">Tudo</option>
         <% if (typeof pastas !== 'undefined' && pastas.length > 0) { %>
             <% pastas.forEach(pasta => { %>
@@ -59,15 +59,17 @@
                 <th>Pasta</th>
                 <th>Parcelas</th> </tr>
         </thead>
-        <tbody>
+      <tbody>
             <% if (typeof itens !== 'undefined' && itens.length > 0) { %>
                 <% itens.forEach(gasto => { %>
                     <tr>
                         <td><%= gasto.description %></td>
-                        <td>R$ <%= Number(gasto.amount).toFixed(2) %></td>
+                        
+                        <td>R$ <%= Number(gasto.valor_parcela_calculado).toFixed(2).replace('.', ',') %></td>
+                        
                         <td><%= new Date(gasto.purchase_date).toLocaleDateString('pt-BR', {timeZone: 'UTC'}) %></td> 
                         
-                        <td><%= gasto.card_name ? gasto.card_name : 'Dinheiro / Débito' %></td>
+                        <td><%= gasto.card_name ? gasto.card_name : 'Dinheiro / Pix' %></td>
                         
                         <td><%= gasto.folder_name ? gasto.folder_name : 'Geral' %></td>
                         
@@ -86,7 +88,7 @@
 </div>
 
 <div class="total">
-    Total de contas: <%= (typeof itens !== 'undefined') ? itens.length : 0 %>
+    Total de contas: R$ <%= typeof totalDoMes !== 'undefined' ? Number(totalDoMes).toFixed(2).replace('.', ',') : '0,00' %>
 </div>
 
 <div class="modal-overlay" id="universalModal" style="display: none;">
@@ -118,7 +120,7 @@
         <div id="groupPurchase" style="display: none;" >
             <input id="phDescription" placeholder="Nome da compra">
             <p> Insira o valor da conta </p>
-            <input id="price" type="number" placeholder="Preço da compra">
+            <input id="price" type="tel" value="R$ 0,00" placeholder="R$ 0,00">            
             <p> Insira a quantidade de parcelas </p>
             <input id="installmentQuantity" type="number" placeholder="Quantidade de parcelas">
             
@@ -142,8 +144,46 @@
                         <% } %>
                     </select>
         </div>
+
+        <div id="groupInstallments" style="display: none;">
+            <div class="table-container" style="max-height: 250px; overflow-y: auto; margin-top: 15px;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead>
+                        <tr>
+                            <th style="padding: 8px; border-bottom: 1px solid #444;">Produto</th>
+                            <th style="padding: 8px; border-bottom: 1px solid #444;">Total</th>
+                            <th style="padding: 8px; border-bottom: 1px solid #444;">Parcela</th>
+                            <th style="padding: 8px; border-bottom: 1px solid #444;">Progresso</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% const comprasParceladas = (typeof itens !== 'undefined') ? itens.filter(g => g.total_installment > 1) : []; %>
+                        
+                        <% if (comprasParceladas.length > 0) { %>
+                            <% comprasParceladas.forEach(gasto => { %>
+                                <tr>
+                                    <td style="padding: 8px; border-bottom: 1px solid #333;"><%= gasto.description %></td>
+                                    
+                                    <td style="padding: 8px; border-bottom: 1px solid #333;">R$ <%= Number(gasto.amount).toFixed(2).replace('.', ',') %></td>
+                                    
+                                    <td style="padding: 8px; border-bottom: 1px solid #333; color: #8b5cf6;">R$ <%= Number(gasto.valor_parcela_calculado).toFixed(2).replace('.', ',') %></td>
+                                    
+                                    <td style="padding: 8px; border-bottom: 1px solid #333;"><%= gasto.current_installment %> / <%= gasto.total_installment %></td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="4" style="text-align: center; padding: 15px; color: #888;">
+                                    Você não possui nenhuma compra parcelada.
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
         <div class="modal-buttons">
-            <button class="cancel" onclick="closeModal()"> Cancelar </button>
+            <button id="cancelModal" class="cancel" onclick="closeModal()"> Cancelar </button>
             <button id="confirmBtn" class="add"> Confirmar </button>
         </div>
     </div>
